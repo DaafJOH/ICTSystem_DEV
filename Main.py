@@ -1,4 +1,4 @@
-import tkinter, json, ssl, urllib.request, _thread, time, datetime
+import tkinter, json, ssl, urllib.request, _thread, time, datetime, re
 ssl._create_default_https_context = ssl._create_unverified_context
 
 class MainWindow():
@@ -26,7 +26,7 @@ class MainWindow():
         self.CoronaRLabel = tkinter.Label(self.CoronaFrame, text="", font=("Comic Sans MS", 50), width=31)
         self.CoronaRLabel.grid_propagate(False)
         self.CoronaRLabel.grid(row=1, column=2, padx=10, pady=10, sticky="EW")
-        self.CoronaRLabelEx = tkinter.Label(self.CoronaFrame, text="Reproduction rate\n(R number)", font=("Comic Sans MS", 25), width=31)
+        self.CoronaRLabelEx = tkinter.Label(self.CoronaFrame, text="Peoples that\nTook booster", font=("Comic Sans MS", 25), width=31)
         self.CoronaRLabelEx.grid(row=2, column=2, padx=10, pady=10, sticky="EW")
 
         self.TimeFrame = tkinter.Frame(master, relief="groove", border=2, width=940, height=250)
@@ -62,8 +62,8 @@ class MainWindow():
 
 def MainLoop():
     while True:
-        InfectedData = json.loads(urllib.request.urlopen("https://coronadashboard.rijksoverheid.nl/_next/data/ZJJVrSo_5vJac2qihzgeq/nl/landelijk/positief-geteste-mensen.json").read())["pageProps"]["selectedNlData"]["difference"]["tested_overall__infected_moving_average"]
-        Window.CoronaTestLabel.config(text=InfectedData["old_value"] + InfectedData["difference"])
+        InfectedData = json.loads(urllib.request.urlopen("https://coronadashboard.rijksoverheid.nl/landelijk/positief-geteste-mensen").read())
+        Window.CoronaTestLabel.config(text="")
 
         ICData = json.loads(urllib.request.urlopen("https://coronadashboard.rijksoverheid.nl/_next/data/ZJJVrSo_5vJac2qihzgeq/nl.json").read())["pageProps"]["selectedNlData"]["intensive_care_lcps"]["last_value"]["beds_occupied_covid"]
         Window.CoronaICLabel.config(text=ICData)
