@@ -1,10 +1,102 @@
-<table border="1" width="1920" height="1080">
-    <tr>
-        <td rowspan="2" style="height: 340px; width: 940px;">Coronadashboard</td>
-        <td rowspan="1" style="height: 250px; width: 940px;">was da time</td>
+<head>
+    <style>
+    th, td {
+        border: 1px solid black;
+        text-align: center;
+        font-family: "Comic Sans MS", "Comic Sans", cursive;
+    }
+    h1 {
+        font-size: 40;
+    }
+    </style>
+    <title>ICTSysteem</title>
+</head>
+
+<body><table style="border: 0px; border-spacing: 20px;" width="1900" height="1060">
+    <tr style="height: 250px;">
+        <td rowspan="2" style="width: 940px;">
+            <table>
+                <tr>
+                    <td style="border: 0; width: 940;" colspan="3"><p style="font-size: 50;">Coronadashboard:</p></td>
+                </tr><tr>
+                    <td style="border: 0; width: 313;"><p style="font-size: 70;">N/A</p></td>
+                    <td style="border: 0; width: 313;"><p style="font-size: 70;">N/A</p></td>
+                    <td style="border: 0; width: 313;"><p style="font-size: 70;">N/A</p></td>
+                </tr><tr>
+                    <td style="border: 0; width: 313;"><p style="font-size: 30;">Peoples that<br>Tested positive</p></td>
+                    <td style="border: 0; width: 313;"><p style="font-size: 30;">Peoples in<br>Intensive Care</p></td>
+                    <td style="border: 0; width: 313;"><p style="font-size: 30;">Peoples that<br>Took booster</p></td>
+                </tr>
+            </table>
+        </td>
+        <td rowspan="1" style="width: 940px;">
+            <table>
+                <tr>
+                    <td style="border: 0px; width: 940px;" colspan="2"><p style="font-size: 50;">Da time of da day</p></td>
+                </tr><tr>
+                    <td style="border: 0px; width: 470px;"><p style="font-size: 70;" id="date">N/A</p></td>
+                    <td style="border: 0px; width: 470px;"><p style="font-size: 70;" id="time">N/A</p></td>
+                </tr><tr">
+                    <td style="border: 0px; width: 470px;"><p style="font-size: 30;" id="date_day">N/A</p></td>
+                    <td style="border: 0px; width: 470px;"><p style="font-size: 30;" id="time_ms">N/A</p></td>
+                </tr>
+            </table>
+        </td>
+    </tr><tr style="height: 90px;">
+        <td rowspan="2" style="width: 940px; text-align: left; font-size: 20;">
+            <script src="https://rss.bloople.net/?url=https%3A%2F%2Fwww.nu.nl%2Frss%2FAlgemeen&detail=50&limit=4&showtitle=false&type=js"></script>
+        </td>
     </tr><tr>
-        <td rowspan="2" style="height: 715px; width: 940px;">das the news</td>
-    </tr><tr>
-        <td rowspan="1" style="height: 625px; width: 940px;">wheres da wedha</td>
+        <td rowspan="1" style="width: 940px;">
+            <table>
+                <tr>
+                    <td style="border: 0; width: 940;" colspan="2"><p style="font-size: 50;">Where's da wetha</p></td>
+                </tr><tr style="height: 256;">
+                    <td style="border: 0;" rowspan="2"><iframe src="https://gadgets.buienradar.nl/gadget/zoommap/?lat=51.44083&lng=5.47778&overname=2&zoom=11&naam=eindhoven&size=3&voor=1" scrolling=no width=550 height=512 frameborder=no></iframe></td>
+                    <td><p id="summary" style="font-size: 25;">N/A</p></td>
+                </tr><tr>
+                    <td style="border: 0;"><iframe src="https://gadgets.buienradar.nl/gadget/forecastandstation/6370/" noresize scrolling=no hspace=0 vspace=0 frameborder=0 marginheight=0 marginwidth=0 width=300 height=190></iframe></td>
+                </tr>
+            </table>
+        </td>
     </tr>
 </table>
+<script>
+function update() {
+    var now = new Date(), // current date
+        days = ["Monday", "Tuesday", "Wednsday", "Thursday", "Friday", "Saturday", "Sunday"]
+        day = days[now.getDay()-1]
+        // a cleaner way than string concatenation
+        date = [now.getDate(), 
+                now.getMonth()+1,
+                now.getFullYear()].join('/');
+    fetch('https://data.buienradar.nl/2.0/feed/json')
+    .then(res => res.json())
+    .then((res) => {
+        const data = res.forecast;
+        document.getElementById('summary').innerHTML = data.weatherreport.summary;
+    });
+
+    // set the content of the element with the ID time to the formatted string
+    document.getElementById('date').innerHTML = date;
+    document.getElementById('date_day').innerHTML = day;
+
+    // call this function again
+    setTimeout(update, 60000);
+}
+update(); // initial call
+function updateTime() {
+    var now = new Date(), // current date
+        time = now.getHours() + ':' + ("0" + now.getMinutes()).slice(-2) + ":" + ("0" + now.getSeconds()).slice(-2), // again, you get the idea
+        ms = ("0" + "0" + now.getMilliseconds()).slice(-3)
+
+    // set the content of the element with the ID time to the formatted string
+    document.getElementById('time').innerHTML = time;
+    document.getElementById('time_ms').innerHTML = ms;
+
+    // call this function again
+    setTimeout(updateTime);
+}
+updateTime(); // initial call
+</script>
+</body>
